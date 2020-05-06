@@ -1,7 +1,7 @@
-FROM alpine:edge
+FROM snewell/native
 
 USER root
 
-RUN apk add --update-cache \
+RUN apk add \
     gcc \
     g++

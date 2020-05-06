@@ -1,6 +1,6 @@
 FROM snewell/gcc-9
 
-RUN apk add --update-cache \
+RUN apk add \
     openjdk11-jre-headless
 RUN rm -rf /var/cache/apk/*
 

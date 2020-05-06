@@ -3,5 +3,6 @@ FROM alpine:edge
 USER root
 
 RUN apk add --update-cache \
-    gcc \
-    g++
+    cmake \
+    git \
+    make

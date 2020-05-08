@@ -1,0 +1,57 @@
+# Because there are a ton of fonts, we're going to build this in stages to
+# avoid having a massive final image.  We'll have the following stages:
+#
+# 1. latex-all-fonts
+#    This installs everything using apk so I'll have what I want.
+#
+# 2. latex-stripped-fonts
+#    This limits fonts to just the ones I acutally want in the final image.
+#    Fonts are stored in an external file (fonts.txt) and anything matching a
+#    case-insensitive check is included (this avoids having to keep track of
+#    regular vs bold vs whatever).
+#
+# 3. <final image>
+#    This adds my latex-helper code so that my projects are ready to run.
+
+FROM alpine:edge AS latex-all-fonts
+
+RUN apk add --update-cache \
+        biber \
+        biblatex \
+        texlive \
+        texmf-dist \
+        texmf-dist-bibtexextra \
+        texmf-dist-fontsextra \
+        texmf-dist-latexextra && \
+    rm -rf /var/cache/apk/*
+
+FROM latex-all-fonts AS latex-stripped-fonts
+# Remove unused fonts
+WORKDIR /work
+ADD fonts.txt cleanup_fonts.sh /work/
+RUN chmod 755  /work/cleanup_fonts.sh && \
+    /work/cleanup_fonts.sh
+
+FROM snewell/native
+RUN apk add --update-cache \
+    biber \
+    biblatex \
+    texlive \
+    texmf-dist \
+    texmf-dist-bibtexextra \
+    texmf-dist-latexextra && \
+    rm -rf /var/cache/apk/*
+
+# Install latex-helper
+WORKDIR /work
+RUN wget https://github.com/snewell/latex-cmake/archive/master.zip && \
+    unzip master.zip && \
+    rm master.zip
+WORKDIR /work/build
+RUN cmake /work/latex-cmake-master && \
+    make install && \
+    rm -rf /work
+
+COPY --from=latex-stripped-fonts /usr/share/texmf-dist/fonts /usr/share/texmf-dist/fonts
+
+WORKDIR /

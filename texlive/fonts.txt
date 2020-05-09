@@ -3,5 +3,6 @@
 
 # Stuff I actually use
 Inconsolata
+Heros
 Pagella
 Didot

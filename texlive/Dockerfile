@@ -16,13 +16,7 @@
 FROM alpine:edge AS latex-all-fonts
 
 RUN apk add --update-cache \
-        biber \
-        biblatex \
-        texlive \
-        texmf-dist \
-        texmf-dist-bibtexextra \
-        texmf-dist-fontsextra \
-        texmf-dist-latexextra && \
+        texmf-dist-fontsextra && \
     rm -rf /var/cache/apk/*
 
 FROM latex-all-fonts AS latex-stripped-fonts
@@ -34,12 +28,16 @@ RUN chmod 755  /work/cleanup_fonts.sh && \
 
 FROM snewell/native
 RUN apk add --update-cache \
+    aspell \
     biber \
     biblatex \
     texlive \
     texmf-dist \
     texmf-dist-bibtexextra \
-    texmf-dist-latexextra && \
+    texmf-dist-latexextra \
+    ttf-inconsolata && \
+    ln -s /usr/share/texmf-dist/scripts/xindy/xindy.pl /usr/bin/xindy && \
+    ln -s /usr/share/texmf-dist/scripts/tex4ht/mk4ht.pl /usr/bin/mk4ht && \
     rm -rf /var/cache/apk/*
 
 # Install latex-helper

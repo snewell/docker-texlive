@@ -1,0 +1,17 @@
+FROM snewell/texlive
+
+ARG USER_ID
+ARG GROUP_ID
+
+RUN addgroup --gid ${GROUP_ID} texuser && \
+    adduser -D -u ${USER_ID} -G texuser texuser && \
+    mkdir /tex && \
+    mkdir /build && \
+    chown texuser:texuser /tex && \
+    chown texuser:texuser /build
+
+VOLUME /tex
+VOLUME /build
+
+WORKDIR /build
+USER texuser

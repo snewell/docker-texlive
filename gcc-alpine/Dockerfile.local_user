@@ -1,0 +1,23 @@
+FROM snewell/gcc-alpine
+
+ARG USER_ID
+ARG GROUP_ID
+
+# Install bash and gdb, then create a user/group for the container so we're not
+# running as root
+RUN apk add --update-cache \
+        bash \
+        gdb && \
+    rm -rf /var/cache/apk/* && \
+    addgroup --gid ${GROUP_ID} gccuser && \
+    adduser -D -u ${USER_ID} -G gccuser gccuser && \
+    mkdir /src && \
+    mkdir /build && \
+    chown gccuser:gccuser /src && \
+    chown gccuser:gccuser /build
+
+VOLUME /src
+VOLUME /build
+
+WORKDIR /build
+USER gccuser

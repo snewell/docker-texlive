@@ -1,0 +1,21 @@
+FROM snewell/texlive-local-user
+
+ARG USER_ID
+ARG GROUP_ID
+
+RUN apk add --update-cache \
+        bash \
+ && rm -rf /var/cache/apk/* \
+ # Create group and user for working with tex
+ && addgroup --gid ${GROUP_ID} texuser \
+ && adduser -D -u ${USER_ID} -G texuser texuser \
+ && mkdir /tex \
+ && mkdir /build \
+ && chown texuser:texuser /tex \
+ && chown texuser:texuser /build
+
+VOLUME /tex
+VOLUME /build
+
+WORKDIR /build
+USER texuser

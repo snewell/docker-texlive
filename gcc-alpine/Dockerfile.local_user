@@ -1,20 +1,26 @@
-FROM snewell/gcc-alpine
+FROM alpine:edge
 
 ARG USER_ID
 ARG GROUP_ID
 
-# Install bash and gdb, then create a user/group for the container so we're not
-# running as root
+# install bash and gdb, along wth the regular stuff I need for building
 RUN apk add --update-cache \
         bash \
-        gdb && \
-    rm -rf /var/cache/apk/* && \
-    addgroup --gid ${GROUP_ID} gccuser && \
-    adduser -D -u ${USER_ID} -G gccuser gccuser && \
-    mkdir /src && \
-    mkdir /build && \
-    chown gccuser:gccuser /src && \
-    chown gccuser:gccuser /build
+        cmake \
+        gcc \
+        gdb \
+        g++ \
+        make \
+ && rm -rf /var/cache/apk/* \
+ # Create a user and group with whatever ID was provided at build time
+ && addgroup --gid ${GROUP_ID} gccuser \
+ && adduser -D -u ${USER_ID} -G gccuser gccuser \
+ # Create mount points for the volumes we're going to be using, and setup the
+ # ownership
+ && mkdir /src \
+ && mkdir /build \
+ && chown gccuser:gccuser /src \
+ && chown gccuser:gccuser /build
 
 VOLUME /src
 VOLUME /build

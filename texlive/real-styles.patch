@@ -1,0 +1,13 @@
+--- a/texmf-dist/tex/latex/sffms/sffms.cls	2020-04-25 14:48:45.807779748 -0600
++++ b/texmf-dist/tex/latex/sffms/sffms.cls	2020-04-25 14:49:10.897857747 -0600
+@@ -177,8 +177,8 @@
+ \ifsffms@submit
+  \AtBeginDocument{
+    \ttfamily
+-   \useunder{\uwave}{\bfseries}{\textbf}%ulem command for boldface
+-   \useunder{\uuline}{\scshape}{\textsc}%ulem command for smallcaps
++   %\useunder{\uwave}{\bfseries}{\textbf}%ulem command for boldface
++   %\useunder{\uuline}{\scshape}{\textsc}%ulem command for smallcaps
+    \renewcommand\chapter{\if@openright\clearpage\else\cleardoublepage\fi
+                         \secdef\@chapter\@schapter}
+     \def\@makechapterhead#1{\vspace*{4\baselineskip}

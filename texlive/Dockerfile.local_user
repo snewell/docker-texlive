@@ -1,63 +1,33 @@
-# Because there are a ton of fonts, we're going to build this in stages to
-# avoid having a massive final image.  We'll have the following stages:
-#
-# 1. latex-all-fonts
-#    This installs everything using apk so I'll have what I want.
-#
-# 2. latex-stripped-fonts
-#    This limits fonts to just the ones I acutally want in the final image.
-#    Fonts are stored in an external file (fonts.txt) and anything matching a
-#    case-insensitive check is included (this avoids having to keep track of
-#    regular vs bold vs whatever).
-#
-# 3. <final image>
-#    This adds my latex-helper code so that my projects are ready to run.
+FROM ubuntu:20.04
 
-FROM alpine:edge AS latex-all-fonts
-
-RUN apk add --update-cache \
-        texmf-dist-fontsextra && \
-    rm -rf /var/cache/apk/*
-
-FROM latex-all-fonts AS latex-stripped-fonts
-# Remove unused fonts
-WORKDIR /work
-ADD \
-        cleanup_fonts.sh \
-        fonts.txt \
-    /work/
-RUN chmod 755  /work/cleanup_fonts.sh \
- && /work/cleanup_fonts.sh
-
-FROM alpine:edge
-
-RUN apk add --update-cache \
+RUN apt-get update \
+ && DEBIAN_FRONTEND="noninteractive" apt-get install --no-install-recommends -y \
         aspell \
         biber \
-        biblatex \
         cmake \
+        curl \
+        fonts-gfs-didot \
+        fonts-inconsolata \
+        fonts-lmodern \
+        fonts-texgyre \
         make \
-        texlive \
-        texmf-dist \
-        texmf-dist-bibtexextra \
-        texmf-dist-latexextra \
-        ttf-inconsolata \
- && rm -rf /var/cache/apk/* \
- # setup symlinks to scripts that I'm going to be using
- && ln -s /usr/share/texmf-dist/scripts/xindy/xindy.pl /usr/bin/xindy \
- && ln -s /usr/share/texmf-dist/scripts/tex4ht/mk4ht.pl /usr/bin/mk4ht
+        patch \
+        texlive-bibtex-extra \
+        texlive-latex-extra \
+        texlive-luatex \
+        texlive-plain-generic \
+        xindy \
+ && rm -rf /var/lib/apt/lists/*
 
 # Install latex-helper
 WORKDIR /work
-RUN wget https://github.com/snewell/latex-cmake/archive/master.zip \
- && unzip master.zip \
- && rm master.zip
+COPY real-styles.patch /work/
+RUN curl -o master.tar.gz -L https://github.com/snewell/latex-cmake/archive/master.tar.gz \
+ && tar xzf master.tar.gz \
+ && rm master.tar.gz
+WORKDIR /usr/share/texlive
+RUN patch -p1 </work/real-styles.patch
 WORKDIR /work/build
 RUN cmake /work/latex-cmake-master \
  && make install \
  && rm -rf /work
-
-# Bring the saved fonts back
-COPY --from=latex-stripped-fonts \
-        /usr/share/texmf-dist/fonts \
-    /usr/share/texmf-dist/fonts

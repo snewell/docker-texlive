@@ -3,12 +3,9 @@ FROM snewell/texlive-local-user
 ARG USER_ID
 ARG GROUP_ID
 
-RUN apk add --update-cache \
-        bash \
- && rm -rf /var/cache/apk/* \
  # Create group and user for working with tex
- && addgroup --gid ${GROUP_ID} texuser \
- && adduser -D -u ${USER_ID} -G texuser texuser \
+RUN addgroup --gid ${GROUP_ID} texuser \
+ && useradd -u ${USER_ID} -m -N -G texuser texuser \
  && mkdir /tex \
  && mkdir /build \
  && chown texuser:texuser /tex \

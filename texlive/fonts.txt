@@ -1,8 +1,0 @@
-# These names are used for filename case-insensitive matching via grep/find.
-# Blank lines and lines starting with a hash are ignored.
-
-# Stuff I actually use
-Inconsolata
-Heros
-Pagella
-Didot

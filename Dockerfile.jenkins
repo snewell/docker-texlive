@@ -1,0 +1,35 @@
+FROM ubuntu:20.04
+
+RUN apt-get update \
+ && DEBIAN_FRONTEND="noninteractive" apt-get install --no-install-recommends -y \
+        aspell \
+        aspell-en \
+        biber \
+        cmake \
+        default-jre-headless \
+        fonts-gfs-didot \
+        fonts-inconsolata \
+        fonts-lmodern \
+        fonts-texgyre \
+        make \
+        patch \
+        texlive-bibtex-extra \
+        texlive-latex-extra \
+        texlive-luatex \
+        texlive-plain-generic \
+        xindy \
+ && rm -rf /var/lib/apt/lists/* \
+ # Create a jenkins user
+ && useradd --system jenkins \
+ && mkdir /work \
+ && chown jenkins:jenkins /work
+
+# Install latex-helper
+WORKDIR /work
+COPY real-styles.patch /work/
+WORKDIR /usr/share/texlive
+RUN patch -p1 </work/real-styles.patch \
+ && rm -rf /work
+
+WORKDIR /work
+USER jenkins

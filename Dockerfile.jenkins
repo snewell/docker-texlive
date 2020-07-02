@@ -20,7 +20,7 @@ RUN apt-get update \
         xindy \
  && rm -rf /var/lib/apt/lists/* \
  # Create a jenkins user
- && useradd --system jenkins \
+ && useradd -m jenkins \
  && mkdir /work \
  && chown jenkins:jenkins /work
 

@@ -11,6 +11,7 @@ RUN apt-get update \
         fonts-inconsolata \
         fonts-lmodern \
         fonts-texgyre \
+        git \
         make \
         patch \
         texlive-bibtex-extra \

@@ -13,6 +13,7 @@ RUN apt-get update \
         fonts-texgyre \
         git \
         make \
+        openssh-client \
         patch \
         texlive-bibtex-extra \
         texlive-latex-extra \

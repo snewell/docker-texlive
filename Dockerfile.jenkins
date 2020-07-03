@@ -20,16 +20,15 @@ RUN apt-get update \
         xindy \
  && rm -rf /var/lib/apt/lists/* \
  # Create a jenkins user
- && useradd -m jenkins \
- && mkdir /work \
- && chown jenkins:jenkins /work
+ && useradd -m jenkins
 
 # Install latex-helper
 WORKDIR /work
 COPY real-styles.patch /work/
 WORKDIR /usr/share/texlive
 RUN patch -p1 </work/real-styles.patch \
- && rm -rf /work
+ && rm -rf /work/real-styles.patch \
+ && chown jenkins:jenkins /work
 
 WORKDIR /work
 USER jenkins

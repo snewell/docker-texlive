@@ -1,3 +1,21 @@
+FROM ubuntu:20.04 as texlive-helper
+RUN apt-get update \
+ && DEBIAN_FRONTEND="noninteractive" apt-get install --no-install-recommends -y \
+        ca-certificates \
+        cmake \
+        curl \
+        make \
+ && rm -rf /var/lib/apt/lists/*
+RUN curl -L https://github.com/snewell/latex-cmake/archive/refs/heads/master.tar.gz -o /latex-cmake.tar.gz
+WORKDIR /work
+RUN tar xzf /latex-cmake.tar.gz --strip-components=1 \
+ && sed -e 's/add_subdirectory/#/' -i CMakeLists.txt \
+ && mkdir build \
+ && cd build \
+ && cmake /work \
+ && cmake --build . \
+ && env DESTDIR=/install cmake --build . --target install
+
 FROM ubuntu:20.04
 
 RUN apt-get update \
@@ -31,6 +49,9 @@ WORKDIR /usr/share/texlive
 RUN patch -p1 </work/real-styles.patch \
  && rm -rf /work/real-styles.patch \
  && chown jenkins:jenkins /work
+COPY --from=texlive-helper \
+    /install/usr/ \
+    /usr/
 
 WORKDIR /work
 USER jenkins

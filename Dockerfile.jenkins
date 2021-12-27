@@ -44,10 +44,15 @@ RUN apt-get update \
 
 # Install latex-helper
 WORKDIR /work
-COPY real-styles.patch /work/
+COPY \
+    no-thirty.patch \
+    real-styles.patch \
+    /work/
 WORKDIR /usr/share/texlive
-RUN patch -p1 </work/real-styles.patch \
- && rm -rf /work/real-styles.patch \
+RUN \
+    patch -p1 </work/no-thirty.patch \
+ && patch -p1 </work/real-styles.patch \
+ && rm -rf /work/*.patch \
  && chown jenkins:jenkins /work
 COPY --from=texlive-helper \
     /install/usr/ \

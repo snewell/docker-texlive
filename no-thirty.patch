@@ -1,0 +1,11 @@
+--- a/texmf-dist/tex/latex/sffms/sffms.cls 2021-12-27 11:20:33.575413322 -0700
++++ b/texmf-dist/tex/latex/sffms/sffms.cls 2021-12-27 11:20:42.328501117 -0700
+@@ -246,7 +246,7 @@
+ \fi%
+ }
+ 
+-\AtEndDocument{\vspace{12pt}\centerline{\thirtystring}%
++\AtEndDocument{%
+   \ifsffms@submit%
+       \wordc=\thepage%
+ \ifsffms@courier \multiply\wordc by 250%

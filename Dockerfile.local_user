@@ -1,10 +1,11 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 RUN apt-get update \
  && DEBIAN_FRONTEND="noninteractive" apt-get install --no-install-recommends -y \
         aspell \
         aspell-en \
         biber \
+        bzip2 \
         cmake \
         curl \
         fonts-gfs-didot \
@@ -14,10 +15,13 @@ RUN apt-get update \
         make \
         patch \
         texlive-bibtex-extra \
+        texlive-extra-utils \
         texlive-latex-extra \
         texlive-luatex \
         texlive-plain-generic \
         xindy \
+        xzutils \
+        zip \
  && rm -rf /var/lib/apt/lists/*
 
 # Install latex-helper

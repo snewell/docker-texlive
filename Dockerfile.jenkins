@@ -1,4 +1,4 @@
-FROM ubuntu:20.04 as texlive-helper
+FROM ubuntu:22.04 as texlive-helper
 RUN apt-get update \
  && DEBIAN_FRONTEND="noninteractive" apt-get install --no-install-recommends -y \
         ca-certificates \
@@ -16,13 +16,14 @@ RUN tar xzf /latex-cmake.tar.gz --strip-components=1 \
  && cmake --build . \
  && env DESTDIR=/install cmake --build . --target install
 
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 RUN apt-get update \
  && DEBIAN_FRONTEND="noninteractive" apt-get install --no-install-recommends -y \
         aspell \
         aspell-en \
         biber \
+        bzip2 \
         cmake \
         default-jre-headless \
         fonts-gfs-didot \
@@ -34,10 +35,13 @@ RUN apt-get update \
         openssh-client \
         patch \
         texlive-bibtex-extra \
+        texlive-extra-utils \
         texlive-latex-extra \
         texlive-luatex \
         texlive-plain-generic \
         xindy \
+        xz-utils \
+        zip \
  && rm -rf /var/lib/apt/lists/* \
  # Create a jenkins user
  && useradd -m jenkins
